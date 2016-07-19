@@ -1,11 +1,21 @@
-function Heap() {
+function Heap(isMin) {
+    this.isMin = isMin;
     this.heap = [];
+
+    this.bubbleCheck = function (parentPos, x) {
+        if (this.isMin) {
+            return this.heap[parentPos] > x;
+        } else {
+            return this.heap[parentPos] < x;
+        }
+    };
+
     this.put = function (x) {
         this.heap.push(x);
         if (this.heap.length > 1) {
             var parentPos = this.getParent(this.heap.length - 1);
             var xPos = this.heap.length - 1;
-            while (this.heap[parentPos] > x) {
+            while (this.bubbleCheck(parentPos, x)) {
                 this.swap(xPos, parentPos);
                 xPos = parentPos;
                 parentPos = this.getParent(xPos);
@@ -31,7 +41,7 @@ function Heap() {
         this.heap[b] = temp;
     };
 
-    this.extractMin = function () {
+    this.extractRoot = function () {
         var oldRoot = this.heap[0];
         this.swap(0, this.heap.length - 1); // make last element the new temp root
         this.heap.length = this.heap.length - 1;// chop off last null element
@@ -43,34 +53,49 @@ function Heap() {
 
         // now lets fix the heap property of the tree:
         while (!(this.checkHeapProperty(pos, children) )) {
-            var smallestChildPos = this.getSmallestChildIdx(children);
-            if (smallestChildPos === false) {
+            var preferredChildPos = this.getPreferredChildIdx(children);
+            if (preferredChildPos === false) {
                 break; // no children present
             }
-            this.swap(pos, smallestChildPos);
-            pos = smallestChildPos;
+            this.swap(pos, preferredChildPos);
+            pos = preferredChildPos;
             children = this.getChildren(pos, children);
         }
         return oldRoot;
     };
+    this.checkHeapPhopertyForChild = function (rootValue, childAidx) {
+        if (this.isMin) {
+            return rootValue > this.heap[childAidx];
+        } else {
+            return rootValue < this.heap[childAidx];
+        }
+    };
+
     this.checkHeapProperty = function (rootIdx, children) {
         const childAidx = children[0];
         const childBidx = children[1];
         const rootValue = this.heap[rootIdx];
-        if (this.checkIdxIsInside(childAidx) && rootValue > this.heap[childAidx]) {
+        if (this.checkIdxIsInside(childAidx) && this.checkHeapPhopertyForChild(rootValue, childAidx)) {
             return false;
-        } else if (this.checkIdxIsInside(childBidx) && rootValue > this.heap[childBidx]) {
+        } else if (this.checkIdxIsInside(childBidx) && this.checkHeapPhopertyForChild(rootValue, childBidx)) {
             return false;
         } else {
             return true;
         }
     };
+    this.compareChildren = function (childAidx, childBidx) {
+        if (this.isMin) {
+            return this.heap[childAidx] <= this.heap[childBidx]
+        } else {
+            return this.heap[childAidx] >= this.heap[childBidx]
 
-    this.getSmallestChildIdx = function (children) {
+        }
+    };
+    this.getPreferredChildIdx = function (children) {
         const childAidx = children[0];
         const childBidx = children[1];
         if (this.checkIdxIsInside(childAidx) && this.checkIdxIsInside(childBidx)) {
-            if (this.heap[childAidx] <= this.heap[childBidx]) {
+            if (this.compareChildren(childAidx, childBidx)) {
                 return childAidx;
             } else {
                 return childBidx;
@@ -87,12 +112,12 @@ function Heap() {
         return idx <= this.heap.length - 1;
     };
 
-    this.getIthSmallest = function (i) {
+    this.getIthRoot = function (i) {
         const originalHeap = this.heap.slice(0); // a shallow copy of our array with integers
         for (var j = 0; j < i; j++) {
-            this.extractMin();
+            this.extractRoot();
         }
-        const ithSmallest = this.extractMin();
+        const ithSmallest = this.extractRoot();
         this.heap = originalHeap; // restore back original heap
         return ithSmallest;
     };
@@ -109,7 +134,7 @@ function getMedian(heap, xk) {
     heap.put(xk);
     const mIdx = getMidx(heap.heap.length) - 1;
     //console.log(mIdx + ' out of ' + heap.heap.length);
-    return heap.getIthSmallest(mIdx);
+    return heap.getIthRoot(mIdx);
 }
 
 module.exports = {

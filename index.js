@@ -6,7 +6,7 @@ const pathName = path.join('./', fileName);
 const median = require('./median');
 const Heap = median.Heap;
 var medianSum = 0;
-var heap = new Heap();
+var heap = new Heap(true);
 const rl = readline.createInterface({
     input: fs.createReadStream(pathName)
 });
