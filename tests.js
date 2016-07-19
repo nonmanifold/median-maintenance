@@ -25,10 +25,16 @@ assert.deepEqual([4, 8, 4, 9, 9, 11, 12, 13], h.heap);
 assert.equal(1, getMidx(1));
 assert.equal(1, getMidx(2));
 assert.equal(2, getMidx(3));
+assert.equal(2, getMidx(4));
+assert.equal(5, getMidx(9));
+assert.equal(5, getMidx(10));
 
 const h2 = new Heap();
-[13, 11, 9, 12, 9, 4, 8, 4, 4].forEach(function (i) {
-    console.log(getMidx(h2.heap.length+1), getMedian(h2, i), h2.heap);
+const medians = [];
+[9, 9, 7, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (i) {
+    var median = getMedian(h2, i);
+    medians.push(median);
+    //console.log(getMidx(h2.heap.length), median, h2.heap);
 });
-
+assert.deepEqual([9, 9, 9, 7, 7, 3, 4, 4, 5, 5, 6, 6], medians);
 console.log('Pass');
