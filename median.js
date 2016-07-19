@@ -97,20 +97,23 @@ function Heap() {
         return ithSmallest;
     };
 }
-
-function getMedian(heap, xk, k) {
-    var mthSmallestIdx;
-    if (k % 2 === 0) {
+function getMidx(totalElements) {
+    if (totalElements % 2 === 0) {
         // k is even
-        mthSmallestIdx = k / 2;
+        return totalElements / 2;
     } else {
-        mthSmallestIdx = (k + 1) / 2;
+        return (totalElements + 1) / 2;
     }
+}
+function getMedian(heap, xk) {
     heap.put(xk);
-    return heap.getIthSmallest(mthSmallestIdx);
+    const mIdx = getMidx(heap.heap.length) - 1;
+    //console.log(mIdx + ' out of ' + heap.heap.length);
+    return heap.getIthSmallest(mIdx);
 }
 
 module.exports = {
     getMedian,
+    getMidx,
     Heap
 };
