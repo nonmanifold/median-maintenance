@@ -1,0 +1,11 @@
+{
+  "name": "median-maintenance",
+  "version": "1.0.0",
+  "description": "Computing sum of medians on a stream of integers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests.js"
+  },
+  "author": "Nick Serebrennikov",
+  "license": "MIT"
+}
