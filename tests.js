@@ -31,10 +31,13 @@ assert.equal(5, getMidx(10));
 
 const h2 = new Heap();
 const medians = [];
+var medianSum = 0;
 [9, 9, 7, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (i) {
     var median = getMedian(h2, i);
     medians.push(median);
+    medianSum = medianSum + median;
     //console.log(getMidx(h2.heap.length), median, h2.heap);
 });
 assert.deepEqual([9, 9, 9, 7, 7, 3, 4, 4, 5, 5, 6, 6], medians);
+assert.equal((9 + 9 + 9 + 7 + 7 + 3 + 4 + 4 + 5 + 5 + 6 + 6), medianSum);
 console.log('Pass');
