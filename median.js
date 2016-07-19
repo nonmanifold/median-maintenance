@@ -86,8 +86,15 @@ function Heap() {
     this.checkIdxIsInside = function (idx) {
         return idx <= this.heap.length - 1;
     };
-    this.getIthSmallest = function (i) {
 
+    this.getIthSmallest = function (i) {
+        const originalHeap = this.heap.slice(0); // a shallow copy of our array with integers
+        for (var j = 0; j < i; j++) {
+            this.extractMin();
+        }
+        const ithSmallest = this.extractMin();
+        this.heap = originalHeap; // restore back original heap
+        return ithSmallest;
     };
 }
 

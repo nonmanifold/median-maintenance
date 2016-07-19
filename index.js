@@ -20,5 +20,4 @@ rl.on('line', function (line) {
 rl.on('close', function () {
     console.log('Sum of medians is ' + medianSum + ' on ' + k + ' integers.');
     console.log('Sum of medians mod 10000 is ' + (medianSum % 10000));
-
 });
