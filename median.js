@@ -1,8 +1,8 @@
-function Heap(isMin) {
-    this.isMin = isMin;
+function Heap(isExtractMin) {
+    this.isMin = isExtractMin;
     this.heap = [];
 
-    this.bubbleCheck = function (parentPos, x) {
+    this.bubbleUpCheck = function (parentPos, x) {
         if (this.isMin) {
             return this.heap[parentPos] > x;
         } else {
@@ -15,7 +15,7 @@ function Heap(isMin) {
         if (this.heap.length > 1) {
             var parentPos = this.getParent(this.heap.length - 1);
             var xPos = this.heap.length - 1;
-            while (this.bubbleCheck(parentPos, x)) {
+            while (this.bubbleUpCheck(parentPos, x)) {
                 this.swap(xPos, parentPos);
                 xPos = parentPos;
                 parentPos = this.getParent(xPos);
@@ -51,7 +51,7 @@ function Heap(isMin) {
         var pos = 0;
         var children = [1, 2];
 
-        // now lets fix the heap property of the tree:
+        // now lets fix the heapLow property of the tree:
         while (!(this.checkHeapProperty(pos, children) )) {
             var preferredChildPos = this.getPreferredChildIdx(children);
             if (preferredChildPos === false) {
@@ -63,11 +63,11 @@ function Heap(isMin) {
         }
         return oldRoot;
     };
-    this.checkHeapPhopertyForChild = function (rootValue, childAidx) {
+    this.isHeapPhopertyForChildViolated = function (rootValue, childIdx) {
         if (this.isMin) {
-            return rootValue > this.heap[childAidx];
+            return rootValue > this.heap[childIdx];
         } else {
-            return rootValue < this.heap[childAidx];
+            return rootValue < this.heap[childIdx];
         }
     };
 
@@ -75,9 +75,9 @@ function Heap(isMin) {
         const childAidx = children[0];
         const childBidx = children[1];
         const rootValue = this.heap[rootIdx];
-        if (this.checkIdxIsInside(childAidx) && this.checkHeapPhopertyForChild(rootValue, childAidx)) {
+        if (this.checkIdxIsInside(childAidx) && this.isHeapPhopertyForChildViolated(rootValue, childAidx)) {
             return false;
-        } else if (this.checkIdxIsInside(childBidx) && this.checkHeapPhopertyForChild(rootValue, childBidx)) {
+        } else if (this.checkIdxIsInside(childBidx) && this.isHeapPhopertyForChildViolated(rootValue, childBidx)) {
             return false;
         } else {
             return true;
@@ -88,7 +88,6 @@ function Heap(isMin) {
             return this.heap[childAidx] <= this.heap[childBidx]
         } else {
             return this.heap[childAidx] >= this.heap[childBidx]
-
         }
     };
     this.getPreferredChildIdx = function (children) {
@@ -112,33 +111,39 @@ function Heap(isMin) {
         return idx <= this.heap.length - 1;
     };
 
-    this.getIthRoot = function (i) {
-        const originalHeap = this.heap.slice(0); // a shallow copy of our array with integers
-        for (var j = 0; j < i; j++) {
-            this.extractRoot();
-        }
-        const ithSmallest = this.extractRoot();
-        this.heap = originalHeap; // restore back original heap
-        return ithSmallest;
+    this.getLength = function () {
+        return this.heap.length;
+    };
+    this.getRootValue = function () {
+        return this.heap[0];
     };
 }
-function getMidx(totalElements) {
-    if (totalElements % 2 === 0) {
-        // k is even
-        return totalElements / 2;
+function getMedian(heapLow, heapHigh, xk) {
+    if (heapLow.getLength() > 0) {
+        if (xk <= heapLow.getRootValue()) {
+            heapLow.put(xk);
+        } else {
+            heapHigh.put(xk);
+        }
     } else {
-        return (totalElements + 1) / 2;
+        heapLow.put(xk);
     }
-}
-function getMedian(heap, xk) {
-    heap.put(xk);
-    const mIdx = getMidx(heap.heap.length) - 1;
-    //console.log(mIdx + ' out of ' + heap.heap.length);
-    return heap.getIthRoot(mIdx);
+
+    // re-balance heaps
+    if (heapLow.getLength() > heapHigh.getLength() + 1) {
+        heapHigh.put(heapLow.extractRoot());
+    } else if (heapHigh.getLength() > heapLow.getLength() + 1) {
+        heapLow.put(heapHigh.extractRoot());
+    }
+    const i = heapLow.getLength() + heapHigh.getLength();
+    if (i % 2 === 0) {
+        return heapHigh.getRootValue();
+    } else {
+        return heapLow.getRootValue();
+    }
 }
 
 module.exports = {
     getMedian,
-    getMidx,
     Heap
 };

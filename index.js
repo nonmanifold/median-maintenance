@@ -6,7 +6,8 @@ const pathName = path.join('./', fileName);
 const median = require('./median');
 const Heap = median.Heap;
 var medianSum = 0;
-var heap = new Heap(true);
+var heapLow = new Heap(true);
+var heapHigh = new Heap(true);
 const rl = readline.createInterface({
     input: fs.createReadStream(pathName)
 });
@@ -14,11 +15,11 @@ const rl = readline.createInterface({
 rl.on('line', function (line) {
     const num = parseInt(line, 10);
     if (num > 0) {
-        medianSum = medianSum + median.getMedian(heap, num);
+        medianSum = medianSum + median.getMedian(heapLow, heapHigh, num);
     }
 });
 
 rl.on('close', function () {
-    console.log('Sum of medians is ' + medianSum + ' on ' + heap.heap.length + ' integers.');
+    console.log('Sum of medians is ' + medianSum + ' on ' + heapLow.heap.length + ',' + heapHigh.heap.length + ' integers.');
     console.log('Sum of medians mod 10000 is ' + (medianSum % 10000));
 });
