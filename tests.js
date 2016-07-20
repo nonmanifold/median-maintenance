@@ -65,5 +65,6 @@ assert.equal(54, getMedianSum([4, 5, 6, 7, 8, 9, 10, 1, 2, 3]));
 
 assert.equal(148, getMedianSum([4, 14, 5, 13, 17, 6, 1, 7, 19, 8, 9, 10, 2, 3, 11, 20, 15, 16, 18, 12]));
 assert.equal(82, getMedianSum([4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 8, 9, 14, -4]));
+assert.equal(50, getMedianSum([9, 6, 14, 19, 8, 4]));
 
 console.log('Pass');

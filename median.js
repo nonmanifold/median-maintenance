@@ -143,6 +143,7 @@ function getMedian(heapLow, heapHigh, xk) {
     } else {
         mk = k / 2;
     }
+
     if (heapLow.getLength() === mk) {
         return heapLow.getRootValue();
     } else {
