@@ -135,11 +135,13 @@ function getMedian(heapLow, heapHigh, xk) {
     } else if (heapHigh.getLength() > heapLow.getLength() + 1) {
         heapLow.put(heapHigh.extractRoot());
     }
-    const i = heapLow.getLength() + heapHigh.getLength();
-    if (i % 2 === 0) {
-        return heapHigh.getRootValue();
-    } else {
+
+    const i = Math.floor((heapLow.getLength() + heapHigh.getLength() + 1) / 2);
+
+    if (heapLow.getLength() === i) {
         return heapLow.getRootValue();
+    } else {
+        return heapHigh.getRootValue();
     }
 }
 

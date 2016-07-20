@@ -40,8 +40,8 @@ assert.deepEqual(13, hMax.extractRoot());
 assert.deepEqual([12, 11, 9, 4, 9, 4, 8, 4], hMax.heap);
 
 function getMedianSum(nums, onNewMedian) {
-    const hLow = new Heap(true);
-    const hHigh = new Heap(false);
+    const hLow = new Heap(false);
+    const hHigh = new Heap(true);
     var medianSum0 = 0;
     nums.forEach(function (i) {
         var median = getMedian(hLow, hHigh, i);
@@ -50,6 +50,7 @@ function getMedianSum(nums, onNewMedian) {
         }
         medianSum0 += median;
     });
+    assert.equal(true, hLow.extractRoot() <= hHigh.extractRoot());
     return medianSum0;
 }
 const medians = [];
