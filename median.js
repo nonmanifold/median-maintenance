@@ -24,11 +24,7 @@ function Heap(isExtractMin) {
     };
 
     this.getParent = function (i) {
-        if (i % 2 === 0) {
-            return i / 2;
-        } else {
-            return Math.floor(i / 2);
-        }
+        return Math.floor((i + 1) / 2) - 1;
     };
     this.getChildren = function (i, childrenArr /* to reduce allocations, we can re-use this tuple */) {
         childrenArr[0] = 2 * (i + 1) - 1;
@@ -54,9 +50,6 @@ function Heap(isExtractMin) {
         // now lets fix the heapLow property of the tree:
         while (!(this.checkHeapProperty(pos, children) )) {
             var preferredChildPos = this.getPreferredChildIdx(children);
-            if (preferredChildPos === false) {
-                break; // no children present
-            }
             this.swap(pos, preferredChildPos);
             pos = preferredChildPos;
             children = this.getChildren(pos, children);
@@ -99,12 +92,8 @@ function Heap(isExtractMin) {
             } else {
                 return childBidx;
             }
-        } else if (this.checkIdxIsInside(childAidx)) {
-            return childAidx;
-        } else if (this.checkIdxIsInside(childBidx)) {
-            return childBidx;
         } else {
-            return false;
+            return childAidx;
         }
     };
     this.checkIdxIsInside = function (idx) {
@@ -118,25 +107,48 @@ function Heap(isExtractMin) {
         return this.heap[0];
     };
 }
-function getMedian(heapLow, heapHigh, xk) {
-    if (heapLow.getLength() > 0) {
-        if (xk <= heapLow.getRootValue()) {
-            heapLow.put(xk);
+function getMedian(maxHeap, minHeap, xk) {
+
+    if (maxHeap.getLength() > 0) {
+        if (xk <= maxHeap.getRootValue()) {
+            maxHeap.put(xk);
         } else {
-            heapHigh.put(xk);
+            minHeap.put(xk);
         }
     } else {
-        heapLow.put(xk);
+        maxHeap.put(xk);
     }
 
     // re-balance heaps
-    if (heapLow.getLength() > heapHigh.getLength() + 1) {
-        heapHigh.put(heapLow.extractRoot());
-    } else if (heapHigh.getLength() > heapLow.getLength() + 1) {
-        heapLow.put(heapHigh.extractRoot());
+    if (maxHeap.getLength() > minHeap.getLength() + 1) {
+        minHeap.put(maxHeap.extractRoot());
+    } else if (minHeap.getLength() > maxHeap.getLength() + 1) {
+        maxHeap.put(minHeap.extractRoot());
     }
+ /*
+     var size = maxHeap.getLength() + minHeap.getLength();
+     if (size == 0) {
+     maxHeap.put(xk);
+     } else if (size % 2 == 0) {
+     if (xk > minHeap.getRootValue()) {
+     maxHeap.put(minHeap.extractRoot());
+     minHeap.put(xk);
+     } else {
+     maxHeap.put(xk);
+     }
 
-    const k = heapLow.getLength() + heapHigh.getLength();
+     } else {
+     if (xk < maxHeap.getRootValue()) {
+     minHeap.put(maxHeap.extractRoot());
+     maxHeap.put(xk);
+     } else {
+     minHeap.put(xk);
+     }
+     }
+
+     return maxHeap.getRootValue();
+     */
+    const k = maxHeap.getLength() + minHeap.getLength();
     var mk;
     if (k % 2 !== 0) {
         mk = (k + 1) / 2;
@@ -144,10 +156,10 @@ function getMedian(heapLow, heapHigh, xk) {
         mk = k / 2;
     }
 
-    if (heapLow.getLength() === mk) {
-        return heapLow.getRootValue();
+    if (maxHeap.getLength() === mk) {
+        return maxHeap.getRootValue();
     } else {
-        return heapHigh.getRootValue();
+        return minHeap.getRootValue();
     }
 }
 
